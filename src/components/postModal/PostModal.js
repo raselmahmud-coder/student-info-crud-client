@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
-const PostModal = (props) => {
-  const { open, setOpen, refetch, ForEdit } = props;
-  console.log("hello for edit", ForEdit);
+const PostModal = ({ open, setOpen, refetch, ForEdit }) => {
+ 
   const [error, setError] = useState(false);
   console.log(open);
   const handleForm = (e) => {
@@ -33,6 +33,9 @@ const PostModal = (props) => {
         })
         .then((data) => {
           if (data) {
+            toast.success("your request was added", {
+              toastId:'post'
+            })
             refetch();
             setOpen(false);
           }

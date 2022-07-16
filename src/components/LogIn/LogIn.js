@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const LogIn = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
   const handleForm = async (e) => {
@@ -11,7 +11,42 @@ const LogIn = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-  
+    const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    if (!email.match(regexEmail) || password.length <= 5) {
+      toast.error(`Plz put valid info`, {
+        toastId: "registration",
+      });
+    } else {
+      fetch(`http://localhost:4000/student/login`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer `,
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.token)
+          if (data.token) {
+            const store = localStorage.setItem("access_token", JSON.stringify(data.token));
+            console.log("hey store", store);
+            navigate("/");
+            toast.success("you have logged in", {
+              toastId: "login",
+            });
+            e.target.reset();
+          } else {
+            toast.error("user not found", {
+              toastId: "not-f",
+            });
+            
+          }
+        });
+    }
   };
   return (
     <>

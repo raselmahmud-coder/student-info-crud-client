@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const PutModal = (props) => {
-  const { open, setOpen, refetch, ForEdit } = props;
+  const { put, setPut, refetch, ForEdit } = props;
   console.log("hello for edit", ForEdit);
   const [error, setError] = useState(false);
-  console.log(open);
+  console.log(put);
   const handleForm = (e) => {
     e.preventDefault();
     const name = e.target.fullName.value;
@@ -13,21 +14,21 @@ const PutModal = (props) => {
     const university = e.target.university.value;
     const regNo = e.target.registration.value;
     if (
-      phone.length === 11 &&
-      name.length > 3 &&
-      degree &&
-      university &&
-      regNo
+      phone.length === 11 ||
+      name.length > 3 ||
+      degree ||
+      university ||
+      regNo ||
+      ForEdit
     ) {
       console.log("inside for edit");
-      fetch(`http://localhost:4000/student`, {
+      fetch(`http://localhost:4000/student/${ForEdit}`, {
         method: "put",
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer `,
         },
         body: JSON.stringify({
-          id: ForEdit,
           name,
           degree,
           university,
@@ -41,8 +42,11 @@ const PutModal = (props) => {
         })
         .then((data) => {
           if (data) {
+            toast.success("your request was updated", {
+              toastId:"put"
+            })
             refetch();
-            setOpen(false);
+            setPut(false);
           }
         });
     } else {
@@ -66,37 +70,32 @@ const PutModal = (props) => {
               className="block w-10/12 p-1 rounded my-1"
               type="text"
               name="fullName"
-              placeholder="Enter Full Name"
-              required
+              placeholder="Enter Full Name above 3 letter"
             />
 
             <input
               className="block w-10/12 p-1 rounded my-1"
               type="number"
               name="phone"
-              placeholder="Enter phone"
-              required
+              placeholder="Enter phone 11 digit"
             />
             <input
               className="block w-10/12 p-1 rounded my-1"
               type="number"
               name="registration"
               placeholder="Enter registration no"
-              required
             />
             <input
               className="block w-10/12 p-1 rounded my-1"
               type="text"
               name="university"
               placeholder="Enter University"
-              required
             />
             <input
               className="block w-10/12 p-1 rounded my-1"
               type="text"
               name="degree"
               placeholder="Enter degree"
-              required
             />
             {error && (
               <p className="text-red-500 text-xl text-center">

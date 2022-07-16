@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
-import PostModal from "../postModal/PostModal";
+import DeleteModal from "../postModal/deleteModal/DeleteModal";
+import PutModal from "../putModal/PutModal";
 
 const StudentsInfo = ({ reGet }) => {
-  const [ForEdit, setForEdit] = useState(false);
-  const [open, setOpen] = useState(false);
   const [put, setPut] = useState(false);
+  const [ForEdit, setForEdit] = useState(false);
+  const [ForDelete, setForDelete] = useState('');
+  const [studentDelete, setStudentDelete] = useState(false);
   const handleEdit = (id) => {
     setForEdit(id);
-
-    console.log("edit it", id);
   };
-  function getStudents() {
-    return fetch(`http://localhost:4000/student`)
-      .then((res) => res.json())
-      .then((result) => result);
+  async function getStudents() {
+    const res = await fetch(`http://localhost:4000/student`);
+    const result_1 = await res.json();
+    return result_1;
   }
   const {
     data: StudentsInfo,
@@ -33,13 +33,35 @@ const StudentsInfo = ({ reGet }) => {
     });
   }
   if (isLoading) {
-    return <p>data is loading...</p>;
+    return <p className="text-center text-xl text-white">data is loading...</p>;
   }
 
-  const handleDelete = (id) => {};
+  const handleDelete = (id) => {
+    setStudentDelete(true);
+    setForDelete(id)
+  };
   return (
     <>
-      {put ? <PostModal put={put} setPut={setPut} refetch={refetch} /> : ""}
+      {put ? (
+        <PutModal
+          put={put}
+          setPut={setPut}
+          refetch={refetch}
+          ForEdit={ForEdit}
+        />
+      ) : (
+        ""
+      )}
+      {studentDelete ? (
+        <DeleteModal
+          studentDelete={studentDelete}
+          setStudentDelete={setStudentDelete}
+          refetch={refetch}
+          ForDelete={ForDelete}
+        />
+      ) : (
+        ""
+      )}
       <div className="overflow-x-auto">
         <table className="table table-zebra w-full">
           <thead>
@@ -71,9 +93,13 @@ const StudentsInfo = ({ reGet }) => {
                   >
                     Edit
                   </label>
-                  <button onClick={() => handleDelete()} className="btn ml-2">
+                  <label
+                    htmlFor="delete-student"
+                    onClick={() => handleDelete(student._id)}
+                    className="btn ml-2"
+                  >
                     delete
-                  </button>
+                  </label>
                 </td>
               </tr>
             ))}

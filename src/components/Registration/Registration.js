@@ -12,12 +12,31 @@ const Registration = () => {
     const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     if (!email.match(regexEmail) || name.length <= 4 || password.length <= 5) {
       toast.error(`Plz put valid info`, {
-        toastId: "regis",
+        toastId: "registration",
       });
     } else {
+      fetch(`http://localhost:4000/student/registration`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          navigate("/log-in");
+          if (data) {
+            toast.success("you have registered, please log in", {
+              toastId: "post",
+            });
+            e.target.reset();
+          }
+        });
     }
-
-    // console.log(name, email, password);
   };
   return (
     <>
@@ -29,10 +48,12 @@ const Registration = () => {
             name="name"
             type="name"
             className="input w-full border-gray-300 border-2"
+            placeholder="Enter at least 5 letter"
             required
           />
           <label htmlFor="email">Email</label>
           <input
+            placeholder="Enter a valid email"
             name="email"
             type="email"
             className="input w-full border-gray-300 border-2"
@@ -40,6 +61,7 @@ const Registration = () => {
           />
           <label htmlFor="password">Password</label>
           <input
+            placeholder="Enter at least 6 characters"
             name="password"
             type="password"
             className="input w-full border-gray-300 border-2"
