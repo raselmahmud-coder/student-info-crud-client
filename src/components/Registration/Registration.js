@@ -15,7 +15,7 @@ const Registration = () => {
         toastId: "registration",
       });
     } else {
-      fetch(`http://localhost:4000/student/registration`, {
+      fetch(`http://localhost:4000/user/registration`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",

@@ -6,7 +6,6 @@ const DeleteModal = ({
   studentDelete,
   setStudentDelete,
   refetch,
-  
 }) => {
   const handleForm = (e) => {
     e.preventDefault();
@@ -14,7 +13,9 @@ const DeleteModal = ({
       method: "delete",
       headers: {
         "Content-Type": "application/json",
-        authorization: `Bearer `,
+        authorization: `Bearer ${JSON.parse(
+          localStorage.getItem("access_token")
+        )}`,
       },
     })
       .then((res) => {

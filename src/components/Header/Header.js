@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import logo from "../../assets/images/logo512.png";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 const Header = () => {
-  const token = localStorage.getItem("accessToken");
-  const [paidAmount, setPaidAmount] = useState(0);
-
+  const token = localStorage.getItem("access_token");
+  const navigate = useNavigate();
   const handleLogOut = () => {
-    localStorage.removeItem("accessToken");
+    navigate("/log-in");
+    localStorage.removeItem("access_token");
   };
   const menu1 = (
     <>
       <li>
         <Link to={"/"}>Home</Link>
       </li>
-
       {
         <li>
           {token ? (

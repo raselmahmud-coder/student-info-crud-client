@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const LogIn = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
 
   const handleForm = async (e) => {
     e.preventDefault();
@@ -17,11 +16,10 @@ const LogIn = () => {
         toastId: "registration",
       });
     } else {
-      fetch(`http://localhost:4000/student/login`, {
+      fetch(`http://localhost:4000/user/login`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
-          authorization: `Bearer `,
         },
         body: JSON.stringify({
           email,
@@ -30,10 +28,9 @@ const LogIn = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data.token)
+          console.log(data.token);
           if (data.token) {
-            const store = localStorage.setItem("access_token", JSON.stringify(data.token));
-            console.log("hey store", store);
+            localStorage.setItem("access_token", JSON.stringify(data.token));
             navigate("/");
             toast.success("you have logged in", {
               toastId: "login",
@@ -43,7 +40,6 @@ const LogIn = () => {
             toast.error("user not found", {
               toastId: "not-f",
             });
-            
           }
         });
     }

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
-const PostModal = ({ open, setOpen, refetch, ForEdit }) => {
- 
+const PostModal = ({ open, setOpen, refetch }) => {
   const [error, setError] = useState(false);
+  const [spinner, setSpinner] = useState(false);
   console.log(open);
   const handleForm = (e) => {
     e.preventDefault();
+    setSpinner(true);
     const name = e.target.fullName.value;
     const phone = e.target.phone.value;
     const degree = e.target.degree.value;
@@ -23,26 +24,28 @@ const PostModal = ({ open, setOpen, refetch, ForEdit }) => {
         method: "post",
         headers: {
           "Content-Type": "application/json",
-          authorization: `Bearer `,
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("access_token")
+          )}`,
         },
         body: JSON.stringify({ name, degree, university, regNo, phone }),
-      })
-        .then((res) => {
-          console.log(res);
-          return res.json();
-        })
-        .then((data) => {
-          if (data) {
-            toast.success("your request was added", {
-              toastId:'post'
-            })
-            refetch();
-            setOpen(false);
-          }
-        });
-
-      //   console.log(phone, name, degree, university, regNo);
+      }).then((res) => {
+        if (res.status === 200) {
+          setSpinner(false);
+          toast.success("your request was added", {
+            toastId: "post",
+          });
+          refetch();
+          setOpen(false);
+        } else {
+          setSpinner(false);
+          toast.error("Authentication failed", {
+            toastId: "auth-failed",
+          });
+        }
+      });
     } else {
+      setSpinner(false);
       setError(true);
     }
   };
@@ -101,8 +104,12 @@ const PostModal = ({ open, setOpen, refetch, ForEdit }) => {
               </p>
             )}
             <div className="modal-action">
-              <button typeof="submit" className="btn-xl cursor-pointer">
-                Submit
+              <button
+                disabled={spinner}
+                typeof="submit"
+                className="btn-xl cursor-pointer"
+              >
+                {spinner ? "Loading..." : "Submit"}
               </button>
             </div>
           </form>

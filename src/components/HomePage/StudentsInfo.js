@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import DeleteModal from "../postModal/deleteModal/DeleteModal";
@@ -7,15 +7,29 @@ import PutModal from "../putModal/PutModal";
 const StudentsInfo = ({ reGet }) => {
   const [put, setPut] = useState(false);
   const [ForEdit, setForEdit] = useState(false);
-  const [ForDelete, setForDelete] = useState('');
+  const [ForDelete, setForDelete] = useState("");
   const [studentDelete, setStudentDelete] = useState(false);
   const handleEdit = (id) => {
     setForEdit(id);
   };
   async function getStudents() {
-    const res = await fetch(`http://localhost:4000/student`);
-    const result_1 = await res.json();
-    return result_1;
+    const res = await fetch(`http://localhost:4000/student`, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${JSON.parse(
+          localStorage.getItem("access_token")
+        )}`,
+      },
+    });
+    if (res.status === 200) {
+      const result_1 = await res.json();
+      return result_1;
+    } else {
+      toast.error("authentication failed", {
+        toastId: "auth-failed",
+      });
+    }
   }
   const {
     data: StudentsInfo,
@@ -38,7 +52,7 @@ const StudentsInfo = ({ reGet }) => {
 
   const handleDelete = (id) => {
     setStudentDelete(true);
-    setForDelete(id)
+    setForDelete(id);
   };
   return (
     <>
@@ -75,7 +89,7 @@ const StudentsInfo = ({ reGet }) => {
             </tr>
           </thead>
           <tbody>
-            {StudentsInfo.map((student) => (
+            {StudentsInfo?.map((student) => (
               <tr key={student._id}>
                 <td>{student.name}</td>
                 <td>{student.phone}</td>

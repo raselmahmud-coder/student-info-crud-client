@@ -3,10 +3,11 @@ import { toast } from "react-toastify";
 
 const PutModal = (props) => {
   const { put, setPut, refetch, ForEdit } = props;
-  console.log("hello for edit", ForEdit);
+  const [spinner, setSpinner] = useState(false);
   const [error, setError] = useState(false);
   console.log(put);
   const handleForm = (e) => {
+    setSpinner(true);
     e.preventDefault();
     const name = e.target.fullName.value;
     const phone = e.target.phone.value;
@@ -26,7 +27,9 @@ const PutModal = (props) => {
         method: "put",
         headers: {
           "Content-Type": "application/json",
-          authorization: `Bearer `,
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("access_token")
+          )}`,
         },
         body: JSON.stringify({
           name,
@@ -35,20 +38,20 @@ const PutModal = (props) => {
           regNo,
           phone,
         }),
-      })
-        .then((res) => {
-          console.log(res);
-          return res.json();
-        })
-        .then((data) => {
-          if (data) {
-            toast.success("your request was updated", {
-              toastId:"put"
-            })
-            refetch();
-            setPut(false);
-          }
-        });
+      }).then((res) => {
+        setSpinner(false);
+        if (res.status === 200) {
+          toast.success("your request was updated", {
+            toastId: "put",
+          });
+          refetch();
+          setPut(false);
+        } else {
+          toast.error("Authentication failed", {
+            toastId: "failed",
+          });
+        }
+      });
     } else {
       setError(true);
     }
@@ -103,8 +106,12 @@ const PutModal = (props) => {
               </p>
             )}
             <div className="modal-action">
-              <button typeof="submit" className="btn-xl cursor-pointer">
-                Submit
+              <button
+                disabled={spinner}
+                typeof="submit"
+                className="btn-xl cursor-pointer"
+              >
+                {spinner ? "Loading..." : "Submit"}
               </button>
             </div>
           </form>
