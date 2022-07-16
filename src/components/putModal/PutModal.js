@@ -23,7 +23,7 @@ const PutModal = (props) => {
       ForEdit
     ) {
       console.log("inside for edit");
-      fetch(`http://localhost:4000/student/${ForEdit}`, {
+      fetch(`https://student-crud-rm.herokuapp.com/student/${ForEdit}`, {
         method: "put",
         headers: {
           "Content-Type": "application/json",

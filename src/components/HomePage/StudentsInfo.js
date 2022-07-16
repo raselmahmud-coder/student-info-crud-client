@@ -13,7 +13,7 @@ const StudentsInfo = ({ reGet }) => {
     setForEdit(id);
   };
   async function getStudents() {
-    const res = await fetch(`http://localhost:4000/student`, {
+    const res = await fetch(`https://student-crud-rm.herokuapp.com/student`, {
       method: "get",
       headers: {
         "Content-Type": "application/json",

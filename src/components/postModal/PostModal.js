@@ -20,7 +20,7 @@ const PostModal = ({ open, setOpen, refetch }) => {
       university &&
       regNo
     ) {
-      fetch(`http://localhost:4000/student`, {
+      fetch(`https://student-crud-rm.herokuapp.com/student`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",

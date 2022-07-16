@@ -9,7 +9,7 @@ const DeleteModal = ({
 }) => {
   const handleForm = (e) => {
     e.preventDefault();
-    fetch(`http://localhost:4000/student/${id}`, {
+    fetch(`https://student-crud-rm.herokuapp.com/student/${id}`, {
       method: "delete",
       headers: {
         "Content-Type": "application/json",
